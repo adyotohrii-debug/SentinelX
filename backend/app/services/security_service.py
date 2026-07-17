@@ -58,6 +58,19 @@ def check_headers(target: str):
     return result
 
 
+def parse_issuer(issuer_tuple):
+    if not issuer_tuple:
+        return {}
+    result = {}
+    try:
+        for item in issuer_tuple:
+            for key, value in item:
+                result[key] = value
+    except Exception:
+        pass
+    return result
+
+
 def check_ssl(target: str):
 
     hostname = normalize_target(target)
@@ -76,10 +89,11 @@ def check_ssl(target: str):
             s.connect((hostname, 443))
 
             cert = s.getpeercert()
+            issuer_data = parse_issuer(cert.get("issuer"))
 
             return {
                 "status": "Valid",
-                "issuer": cert.get("issuer"),
+                "issuer": issuer_data,
                 "expires": cert.get("notAfter")
             }
 
