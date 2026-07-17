@@ -1,0 +1,38 @@
+{
+  "security_score": 0,
+  "risk_level": "Imported",
+  "recommendations": [
+    "Nmap XML parsed successfully."
+  ],
+  "headers": {},
+  "ssl": {},
+  "dns": {},
+  "whois": {},
+  "technology": {},
+  "open_ports": [
+    {
+      "ip": "192.168.1.10",
+      "port": "22",
+      "service": "ssh",
+      "status": "open",
+      "scanner": "Nmap"
+    },
+    {
+      "ip": "192.168.1.10",
+      "port": "80",
+      "service": "http",
+      "status": "open",
+      "scanner": "Nmap"
+    },
+    {
+      "ip": "192.168.1.10",
+      "port": "443",
+      "service": "https",
+      "status": "open",
+      "scanner": "Nmap"
+    }
+  ],
+  "server": {
+    "server": "Nmap"
+  }
+}

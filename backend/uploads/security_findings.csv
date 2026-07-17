@@ -1,0 +1,6 @@
+ID,Severity,Title,Description,Host,Port,Status
+1,Critical,SQL Injection,SQL injection vulnerability detected,192.168.1.10,80,Open
+2,High,Cross Site Scripting,Reflected XSS vulnerability found,192.168.1.10,443,Open
+3,Medium,Weak SSH Cipher,Weak SSH ciphers enabled,192.168.1.10,22,Open
+4,Low,Missing Security Headers,X-Frame-Options header missing,192.168.1.10,80,Open
+5,Info,Open Port,HTTP service detected,192.168.1.10,80,Open
