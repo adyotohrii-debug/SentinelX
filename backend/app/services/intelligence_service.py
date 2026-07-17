@@ -1,6 +1,5 @@
 import requests
 import whois
-import builtwith
 import dns.resolver
 
 from urllib.parse import urlparse
