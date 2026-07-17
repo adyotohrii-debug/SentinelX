@@ -297,7 +297,7 @@ function downloadPDF() {
     }
 
     html2pdf(element, {
-        margin: 10,
+        margin: 0,
         filename: "SentinelX_Report.pdf",
         image: {
             type: "jpeg",
@@ -311,7 +311,8 @@ function downloadPDF() {
             unit: "mm",
             format: "a4",
             orientation: "portrait"
-        }
+        },
+        pagebreak: { mode: ['css', 'legacy'] }
     });
 }
 return (

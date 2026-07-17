@@ -100,11 +100,12 @@ export default function History() {
         }
         
         html2pdf(element, {
-          margin: 10,
+          margin: 0,
           filename: `SentinelX_Report_${details.target.replace(/[^a-z0-9]/gi, "_")}.pdf`,
           image: { type: "jpeg", quality: 1 },
           html2canvas: { scale: 2, useCORS: true },
-          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+          pagebreak: { mode: ['css', 'legacy'] }
         }).then(() => {
           setPdfLoading(false);
           setPdfData(null);
