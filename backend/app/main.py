@@ -25,6 +25,9 @@ if "assessments" in inspector.get_table_names():
     if "raw_results" not in columns:
         with engine.begin() as conn:
             conn.execute(text("ALTER TABLE assessments ADD COLUMN raw_results TEXT"))
+    if "user_id" not in columns:
+        with engine.begin() as conn:
+            conn.execute(text("ALTER TABLE assessments ADD COLUMN user_id TEXT"))
 
 app = FastAPI(
     title="SentinelX API",

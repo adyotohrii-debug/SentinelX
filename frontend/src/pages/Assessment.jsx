@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../services/api";
 import html2pdf from "html2pdf.js";
 
 import PDFReport from "../components/PDFReport";
@@ -91,8 +91,8 @@ export default function Assessment() {
             }
             setLoadingText("Running assessment modules...");
 
-            const promise = axios.post(
-                `${API}/security/scan`,
+            const promise = api.post(
+                `/security/scan`,
                 { target: website }
             );
 
@@ -140,9 +140,9 @@ export default function Assessment() {
 
             formData.append("file", selectedFile);
 
-            const response = await axios.post(
+            const response = await api.post(
 
-                `${API}/upload/file`,
+                `/upload/file`,
 
                 formData,
 

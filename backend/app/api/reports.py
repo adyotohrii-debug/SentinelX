@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Header
 from fastapi.responses import Response
 from sqlalchemy.orm import Session
+from typing import Optional
 
 from app.core.database import get_db
 from app.services.report_service import generate_report
@@ -13,14 +14,24 @@ router = APIRouter(
 
 
 @router.get("/")
-def get_report(db: Session = Depends(get_db)):
-    return generate_report(db)
+def get_report(
+    db: Session = Depends(get_db),
+    x_user_id: Optional[str] = Header(None),
+    user_id: Optional[str] = None
+):
+    active_user_id = user_id or x_user_id
+    return generate_report(db, active_user_id)
 
 
 @router.get("/pdf")
-def download_pdf(db: Session = Depends(get_db)):
+def download_pdf(
+    db: Session = Depends(get_db),
+    x_user_id: Optional[str] = Header(None),
+    user_id: Optional[str] = None
+):
 
-    report = generate_report(db)
+    active_user_id = user_id or x_user_id
+    report = generate_report(db, active_user_id)
 
     pdf = generate_pdf(report)
 

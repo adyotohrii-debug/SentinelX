@@ -25,4 +25,10 @@ class Assessment(Base):
     raw_results = Column(
         Text,
         nullable=True
+    )
+
+    user_id = Column(
+        String,
+        nullable=True,
+        index=True
     )

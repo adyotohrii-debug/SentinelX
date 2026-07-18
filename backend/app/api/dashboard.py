@@ -1,5 +1,6 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Header
 from sqlalchemy.orm import Session
+from typing import Optional
 
 from app.core.database import SessionLocal
 from app.services.dashboard_service import get_dashboard_stats
@@ -19,6 +20,9 @@ def get_db():
 
 
 @router.get("/stats")
-def dashboard_stats(db: Session = Depends(get_db)):
-    return get_dashboard_stats(db)
+def dashboard_stats(
+    db: Session = Depends(get_db),
+    x_user_id: Optional[str] = Header(None)
+):
+    return get_dashboard_stats(db, x_user_id)
     

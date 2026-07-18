@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Header
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
+from typing import Optional
 
 from app.core.database import SessionLocal
 from app.models.assessment import Assessment
@@ -44,7 +45,11 @@ def get_db():
 
 
 @router.post("/scan")
-def run_security_scan(data: SecurityRequest, db: Session = Depends(get_db)):
+def run_security_scan(
+    data: SecurityRequest, 
+    db: Session = Depends(get_db), 
+    x_user_id: Optional[str] = Header(None)
+):
 
     target = data.target.strip()
 
@@ -70,57 +75,57 @@ def run_security_scan(data: SecurityRequest, db: Session = Depends(get_db)):
         future_server = executor.submit(get_server_information, target)
 
         try:
-            headers = future_headers.result(timeout=6.0)
+            headers = future_headers.result()
         except Exception:
             headers = {}
 
         try:
-            ssl_result = future_ssl.result(timeout=6.0)
+            ssl_result = future_ssl.result()
         except Exception:
             ssl_result = {"status": "Unavailable"}
 
         try:
-            ports = future_ports.result(timeout=6.0)
+            ports = future_ports.result()
         except Exception:
             ports = []
 
         try:
-            nmap = future_nmap.result(timeout=6.0)
+            nmap = future_nmap.result()
         except Exception:
             nmap = {"installed": False, "message": "Nmap scan failed."}
 
         try:
-            whois_info = future_whois.result(timeout=6.0)
+            whois_info = future_whois.result()
         except Exception:
             whois_info = {"error": "WHOIS lookup failed."}
 
         try:
-            dns_info = future_dns.result(timeout=6.0)
+            dns_info = future_dns.result()
         except Exception:
             dns_info = {"A": [], "MX": [], "NS": []}
 
         try:
-            technologies = future_tech.result(timeout=6.0)
+            technologies = future_tech.result()
         except Exception:
             technologies = {}
 
         try:
-            robots = future_robots.result(timeout=6.0)
+            robots = future_robots.result()
         except Exception:
             robots = {"found": False}
 
         try:
-            sitemap = future_sitemap.result(timeout=6.0)
+            sitemap = future_sitemap.result()
         except Exception:
             sitemap = {"found": False}
 
         try:
-            methods = future_methods.result(timeout=6.0)
+            methods = future_methods.result()
         except Exception:
             methods = {}
 
         try:
-            server = future_server.result(timeout=6.0)
+            server = future_server.result()
         except Exception:
             server = {"server": "Unknown", "powered_by": "Unknown"}
 
@@ -149,7 +154,8 @@ def run_security_scan(data: SecurityRequest, db: Session = Depends(get_db)):
         target=target,
         input_type="Website",
         status="Completed",
-        raw_results=json.dumps(full_report)
+        raw_results=json.dumps(full_report),
+        user_id=x_user_id
     )
     db.add(assessment)
     db.flush()
