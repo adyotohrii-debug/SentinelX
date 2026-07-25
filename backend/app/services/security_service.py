@@ -13,46 +13,54 @@ COMMON_PORTS = [
 ]
 
 
-def normalize_target(target: str):
-    """
-    Returns hostname only.
-    https://example.com -> example.com
-    """
-
-    if not target.startswith("http"):
+def normalize_url(target: str) -> str:
+    """Ensure target URL has proper scheme and no trailing slash."""
+    target = target.strip().rstrip("/")
+    if not target.startswith("http://") and not target.startswith("https://"):
         target = "https://" + target
+    return target
 
-    parsed = urlparse(target)
 
-    return parsed.hostname
+def normalize_target(target: str) -> str:
+    """Returns hostname only for socket / DNS operations."""
+    url = normalize_url(target)
+    parsed = urlparse(url)
+    return parsed.hostname or target.strip()
 
 
 def check_headers(target: str):
-
     result = {}
+    url = normalize_url(target)
+    headers_to_check = [
+        "Content-Security-Policy",
+        "Strict-Transport-Security",
+        "X-Frame-Options",
+        "X-Content-Type-Options",
+        "Referrer-Policy",
+        "Permissions-Policy"
+    ]
 
     try:
         response = requests.get(
-            target,
-            timeout=3.5
+            url,
+            timeout=5.0,
+            allow_redirects=True,
+            headers={"User-Agent": "SentinelX-Security-Scanner/2.0"}
         )
+        resp_headers = response.headers
 
-        headers = response.headers
-
-        security_headers = [
-            "Content-Security-Policy",
-            "Strict-Transport-Security",
-            "X-Frame-Options",
-            "X-Content-Type-Options",
-            "Referrer-Policy",
-            "Permissions-Policy"
-        ]
-
-        for h in security_headers:
-            result[h] = headers.get(h, "Missing")
+        for h in headers_to_check:
+            # Case-insensitive header lookup
+            val = None
+            for hk, hv in resp_headers.items():
+                if hk.lower() == h.lower():
+                    val = hv
+                    break
+            result[h] = val if val else "Missing"
 
     except Exception as e:
-
+        for h in headers_to_check:
+            result[h] = "Missing"
         result["error"] = str(e)
 
     return result
@@ -72,22 +80,16 @@ def parse_issuer(issuer_tuple):
 
 
 def check_ssl(target: str):
-
     hostname = normalize_target(target)
 
     try:
-
         context = ssl.create_default_context()
-
         with context.wrap_socket(
             socket.socket(),
             server_hostname=hostname
         ) as s:
-
-            s.settimeout(3.0)
-
+            s.settimeout(5.0)
             s.connect((hostname, 443))
-
             cert = s.getpeercert()
             issuer_data = parse_issuer(cert.get("issuer"))
 
@@ -98,7 +100,6 @@ def check_ssl(target: str):
             }
 
     except Exception as e:
-
         return {
             "status": "Unavailable",
             "error": str(e)
@@ -106,25 +107,16 @@ def check_ssl(target: str):
 
 
 def scan_ports(target: str):
-
     hostname = normalize_target(target)
-
     open_ports = []
 
     for port in COMMON_PORTS:
-
         try:
-
-            sock = socket.socket()
-
-            sock.settimeout(0.5)
-
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.settimeout(0.6)
             if sock.connect_ex((hostname, port)) == 0:
-
                 open_ports.append(port)
-
             sock.close()
-
         except Exception:
             pass
 
@@ -132,14 +124,11 @@ def scan_ports(target: str):
 
 
 def detect_nmap():
-
     return shutil.which("nmap") is not None
 
 
 def run_nmap(target: str):
-
     if not detect_nmap():
-
         return {
             "installed": False,
             "message": "Nmap not installed."
@@ -148,7 +137,6 @@ def run_nmap(target: str):
     hostname = normalize_target(target)
 
     try:
-
         result = subprocess.run(
             [
                 "nmap",
@@ -166,7 +154,6 @@ def run_nmap(target: str):
         }
 
     except Exception as e:
-
         return {
             "installed": True,
             "error": str(e)
@@ -210,4 +197,4 @@ def get_tools_status():
             if zap_running
             else "OWASP ZAP is not installed or not running. Advanced vulnerability scanning is unavailable. All other SentinelX security assessment features remain fully functional."
         )
-    }
+    }

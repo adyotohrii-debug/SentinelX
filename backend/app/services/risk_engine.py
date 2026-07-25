@@ -1,7 +1,6 @@
 def calculate_risk(scan_result):
 
     score = 100
-
     recommendations = []
 
     headers = scan_result.get("headers", {})
@@ -38,31 +37,25 @@ def calculate_risk(scan_result):
     # -------------------------
     # Security Headers
     # -------------------------
-
     for header, (penalty, advice) in penalties.items():
-
-        if headers.get(header) == "Missing":
-
+        val = headers.get(header)
+        if val == "Missing" or val is None or val == "" or "error" in headers:
             score -= penalty
-
-            recommendations.append(advice)
+            if advice not in recommendations:
+                recommendations.append(advice)
 
     # -------------------------
     # SSL
     # -------------------------
-
     if ssl.get("status") != "Valid":
-
         score -= 20
-
-        recommendations.append(
-            "SSL Certificate is invalid."
-        )
+        ssl_advice = "SSL Certificate is invalid or missing."
+        if ssl_advice not in recommendations:
+            recommendations.append(ssl_advice)
 
     # -------------------------
     # Dangerous Ports
     # -------------------------
-
     dangerous_ports = {
         21: ("FTP port exposed.", 10),
         22: ("SSH port exposed.", 10),
@@ -73,130 +66,87 @@ def calculate_risk(scan_result):
     }
 
     for port in ports:
-
         if port in dangerous_ports:
-
             advice, penalty = dangerous_ports[port]
-
             score -= penalty
-
-            recommendations.append(advice)
+            if advice not in recommendations:
+                recommendations.append(advice)
 
     # -------------------------
-    # robots.txt
+    # robots.txt & sitemap.xml
     # -------------------------
-
     if not robots.get("found"):
-
         score -= 3
-
-        recommendations.append(
-            "robots.txt not found."
-        )
-
-    # -------------------------
-    # sitemap.xml
-    # -------------------------
+        r_advice = "robots.txt not found."
+        if r_advice not in recommendations:
+            recommendations.append(r_advice)
 
     if not sitemap.get("found"):
-
         score -= 3
-
-        recommendations.append(
-            "sitemap.xml not found."
-        )
+        s_advice = "sitemap.xml not found."
+        if s_advice not in recommendations:
+            recommendations.append(s_advice)
 
     # -------------------------
     # Server Exposure
     # -------------------------
-
-    server_name = str(
-        server.get("server", "")
-    ).lower()
-
-    if server_name in [
-        "apache",
-        "apache/2.2",
-        "iis/7",
-    ]:
-
+    server_name = str(server.get("server", "")).lower()
+    if any(s in server_name for s in ["apache/2.2", "iis/7"]):
         score -= 5
-
-        recommendations.append(
-            "Server software appears outdated."
-        )
+        srv_advice = "Server software appears outdated."
+        if srv_advice not in recommendations:
+            recommendations.append(srv_advice)
 
     # -------------------------
     # Technology Detection
     # -------------------------
-
-    if technology:
-
+    if technology and not technology.get("error"):
         score += 2
-
     else:
-
         score -= 5
 
     # -------------------------
     # OWASP Findings (if present)
     # -------------------------
-
     owasp_findings = scan_result.get("owasp_findings", [])
     for finding in owasp_findings:
         risk_str = str(finding.get("risk", "")).lower()
-        if "high" in risk_str:
+        title = finding.get("title", "Vulnerability detected")
+        if "critical" in risk_str:
+            score -= 15
+            recommendations.append(f"OWASP Critical Risk: {title}")
+        elif "high" in risk_str:
             score -= 10
-            recommendations.append(f"OWASP High Risk: {finding.get('title', 'Vulnerability detected')}")
+            recommendations.append(f"OWASP High Risk: {title}")
         elif "medium" in risk_str:
             score -= 5
-            recommendations.append(f"OWASP Medium Risk: {finding.get('title', 'Vulnerability detected')}")
+            recommendations.append(f"OWASP Medium Risk: {title}")
         elif "low" in risk_str:
             score -= 2
-            recommendations.append(f"OWASP Low Risk: {finding.get('title', 'Vulnerability detected')}")
-        elif "critical" in risk_str:
-            score -= 15
-            recommendations.append(f"OWASP Critical Risk: {finding.get('title', 'Vulnerability detected')}")
+            recommendations.append(f"OWASP Low Risk: {title}")
 
     # -------------------------
-    # Clamp
+    # Score Clamping
     # -------------------------
-
-
     score = max(0, min(score, 100))
 
     # -------------------------
-    # Risk Level
+    # Risk Level Determination
     # -------------------------
-
     if score >= 90:
-
         risk = "Low"
-
     elif score >= 70:
-
         risk = "Medium"
-
     elif score >= 40:
-
         risk = "High"
-
     else:
-
         risk = "Critical"
 
     if len(recommendations) == 0:
-
-        recommendations.append(
-            "No major security issues detected."
-        )
+        recommendations.append("No major security issues detected.")
 
     return {
-
         "score": score,
-
         "risk": risk,
-
         "recommendations": recommendations
-
     }
