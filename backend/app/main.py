@@ -1,5 +1,9 @@
+import os
+import io
+import zipfile
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from app.api.security import router as security_router
 
 from app.core.database import Base, engine
@@ -66,3 +70,27 @@ def health():
         "status": "healthy",
         "database": "connected"
     }
+
+
+@app.get("/download-zip")
+def download_project_zip():
+    """Dynamically zip and serve the SentinelX project source code for direct download."""
+    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+    zip_buffer = io.BytesIO()
+
+    with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
+        for root, dirs, files in os.walk(project_root):
+            dirs[:] = [d for d in dirs if d not in ("venv", "node_modules", ".git", "__pycache__", ".pytest_cache", "dist", "build", ".brain")]
+            for file in files:
+                if file.endswith((".pyc", ".pyo", ".log", ".tmp")):
+                    continue
+                file_path = os.path.join(root, file)
+                arcname = os.path.relpath(file_path, project_root)
+                zip_file.write(file_path, os.path.join("SentinelX-main", arcname))
+
+    zip_buffer.seek(0)
+    return StreamingResponse(
+        zip_buffer,
+        media_type="application/zip",
+        headers={"Content-Disposition": 'attachment; filename="SentinelX-main.zip"'}
+    )
