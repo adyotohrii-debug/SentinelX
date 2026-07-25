@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { CheckCircle2, XCircle, Shield, Cpu, RefreshCw, AlertTriangle } from "lucide-react";
+import { CheckCircle2, XCircle, Shield, Cpu, RefreshCw, AlertTriangle, Info } from "lucide-react";
 import api from "../services/api";
 
 export default function ToolStatusCard({ compact = false }) {
@@ -45,9 +45,9 @@ export default function ToolStatusCard({ compact = false }) {
   }
 
   const items = [
-    { label: "Nmap Installed", active: status?.nmap_installed },
-    { label: "OWASP ZAP Installed", active: status?.zap_installed },
-    { label: "OWASP Running", active: status?.zap_running },
+    { label: "Nmap Installed", active: status?.nmap_installed, subtitle: "Active on Backend Server" },
+    { label: "OWASP ZAP Installed", active: status?.zap_installed, subtitle: "Local Desktop Binary" },
+    { label: "OWASP Running", active: status?.zap_running, subtitle: "API at 127.0.0.1:8080" },
   ];
 
   return (
@@ -76,7 +76,7 @@ export default function ToolStatusCard({ compact = false }) {
             border: "1px solid var(--border-glass)",
             color: "var(--text-muted)",
             borderRadius: "8px",
-            padding: "4px 8px",
+            padding: "4px 10px",
             cursor: "pointer",
             display: "inline-flex",
             alignItems: "center",
@@ -94,7 +94,7 @@ export default function ToolStatusCard({ compact = false }) {
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
           gap: "12px",
-          marginBottom: status?.zap_running ? "0px" : "16px",
+          marginBottom: "16px",
         }}
       >
         {items.map((item) => (
@@ -102,27 +102,32 @@ export default function ToolStatusCard({ compact = false }) {
             key={item.label}
             style={{
               display: "flex",
-              alignItems: "center",
-              gap: "8px",
+              flexDirection: "column",
+              gap: "4px",
               padding: "10px 14px",
               background: item.active ? "rgba(80, 203, 147, 0.08)" : "rgba(238, 92, 105, 0.08)",
               border: `1px solid ${item.active ? "rgba(80, 203, 147, 0.25)" : "rgba(238, 92, 105, 0.25)"}`,
               borderRadius: "10px",
             }}
           >
-            {item.active ? (
-              <CheckCircle2 size={18} color="#50cb93" />
-            ) : (
-              <XCircle size={18} color="#ee5c69" />
-            )}
-            <span
-              style={{
-                fontSize: "0.88rem",
-                fontWeight: "600",
-                color: item.active ? "#50cb93" : "var(--text-muted)",
-              }}
-            >
-              {item.active ? `✓ ${item.label}` : `✕ ${item.label}`}
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              {item.active ? (
+                <CheckCircle2 size={18} color="#50cb93" />
+              ) : (
+                <XCircle size={18} color="#ee5c69" />
+              )}
+              <span
+                style={{
+                  fontSize: "0.88rem",
+                  fontWeight: "600",
+                  color: item.active ? "#50cb93" : "var(--text-muted)",
+                }}
+              >
+                {item.active ? `✓ ${item.label}` : `✕ ${item.label}`}
+              </span>
+            </div>
+            <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", paddingLeft: "26px" }}>
+              {item.subtitle}
             </span>
           </div>
         ))}
@@ -131,22 +136,21 @@ export default function ToolStatusCard({ compact = false }) {
       {!status?.zap_running && (
         <div
           style={{
-            marginTop: "14px",
-            padding: "12px 16px",
+            padding: "14px 16px",
             background: "rgba(245, 158, 11, 0.08)",
             border: "1px solid rgba(245, 158, 11, 0.25)",
             borderRadius: "10px",
-            fontSize: "0.85rem",
+            fontSize: "0.86rem",
             color: "#fbbf24",
             display: "flex",
             alignItems: "flex-start",
             gap: "10px",
-            lineHeight: "1.4",
+            lineHeight: "1.5",
           }}
         >
           <AlertTriangle size={18} style={{ flexShrink: 0, marginTop: "2px" }} />
           <div>
-            <strong>OWASP ZAP is not installed or not running.</strong> Advanced vulnerability scanning is unavailable. All other SentinelX security assessment features remain fully functional.
+            <strong>OWASP ZAP is not running locally.</strong> Web browsers cannot trigger desktop applications (like OWASP ZAP) automatically. <b>Nmap port scanning and online assessment modules are active on the SentinelX backend server.</b> To use OWASP ZAP active scanning, install OWASP ZAP locally on your computer (port 8080) and run SentinelX locally, or import OWASP ZAP XML reports under <i>New Assessment → Import Existing Scan</i>.
           </div>
         </div>
       )}
