@@ -180,9 +180,10 @@ export default function Dashboard() {
           </section>
 
           <section className="dashboard-panel scan-history-panel">
-            <div className="panel-heading"><div><span className="eyebrow">Your activity</span><h2>Recently assessed websites</h2></div><Link to="/history" className="history-link">View all history <ArrowRight size={15} /></Link></div>
-            {assessments.length ? <div className="recent-table-wrap"><table className="recent-table"><thead><tr><th>Website</th><th>Assessment type</th><th>Status</th><th>Completed</th><th /></tr></thead><tbody>{assessments.slice().reverse().slice(0, 5).map((item) => <tr key={item.id}><td><strong>{item.target}</strong><small>{item.name}</small></td><td>{item.input_type}</td><td><span className="completed-badge">{item.status || "Completed"}</span></td><td>{item.created_at ? formatScanDate(item.created_at) : "—"}</td><td><Link to="/history" aria-label={`View ${item.target}`}><ArrowRight size={17} /></Link></td></tr>)}</tbody></table></div> : <div className="empty-history"><ScanSearch size={22} /><div><strong>No websites assessed yet</strong><p>Run your first security assessment to build your activity history.</p></div><Link to="/assessment" className="primary-button">Start assessment</Link></div>}
+            <div className="panel-heading"><div><span className="eyebrow">Your activity</span><h2>Recent assessment records</h2></div><Link to="/history" className="history-link">View all history <ArrowRight size={15} /></Link></div>
+            {assessments.length ? <div className="recent-table-wrap"><table className="recent-table"><thead><tr><th>Target / File</th><th>Assessment type</th><th>Status</th><th>Completed</th><th /></tr></thead><tbody>{assessments.slice().reverse().slice(0, 5).map((item) => <tr key={item.id}><td><strong>{item.target}</strong><small>{item.name}</small></td><td>{item.input_type}</td><td><span className="completed-badge">{item.status || "Completed"}</span></td><td>{item.created_at ? formatScanDate(item.created_at) : "—"}</td><td><Link to="/history" aria-label={`View ${item.target}`}><ArrowRight size={17} /></Link></td></tr>)}</tbody></table></div> : <div className="empty-history"><ScanSearch size={22} /><div><strong>No assessment records yet</strong><p>Run your first security assessment or import a file to build your activity history.</p></div><Link to="/assessment" className="primary-button">Start assessment</Link></div>}
           </section>
+
 
         </>}
       </main>

@@ -1,5 +1,5 @@
 import { Command, Search } from "lucide-react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import "../styles/layout.css";
 
@@ -38,7 +38,10 @@ export default function Topbar() {
   return (
     <header className="app-topbar">
       <div>
-        <div className="breadcrumb">Workspace <span>/</span> {title}</div>
+        <div className="breadcrumb">
+          <Link to="/" style={{ color: "var(--text-muted)", textDecoration: "none" }}>Home</Link>
+          <span>/</span> {title}
+        </div>
         <h2>{title}</h2>
         <p>{subtitle}</p>
       </div>

@@ -3,19 +3,6 @@ import MainLayout from "../layouts/MainLayout";
 import ToolStatusCard from "../components/ToolStatusCard";
 
 export default function OwaspSetup() {
-  const handleDownloadZip = (e) => {
-    e.preventDefault();
-    const githubZipUrl = "https://github.com/adyotohrii-debug/SentinelX/archive/refs/heads/main.zip";
-    const API = import.meta.env.VITE_API_URL;
-    
-    if (API && API.startsWith("http")) {
-      window.open(`${API}/download-zip`, "_blank");
-    } else {
-      window.open(githubZipUrl, "_blank");
-    }
-  };
-
-
   return (
     <MainLayout>
       <div style={{ animation: "fadeIn 0.5s ease", maxWidth: "1000px" }}>
@@ -38,7 +25,7 @@ export default function OwaspSetup() {
             OWASP ZAP & Local Environment Setup Guide
           </h1>
           <p style={{ color: "var(--text-muted)", fontSize: "0.98rem", lineHeight: "1.6" }}>
-            Complete step-by-step guide to installing local security tools (Nmap & OWASP ZAP), downloading SentinelX, and running the platform on your machine.
+            Complete step-by-step guide to installing local security tools (Nmap & OWASP ZAP), cloning SentinelX, and running the platform on your machine.
           </p>
         </div>
 
@@ -75,28 +62,6 @@ export default function OwaspSetup() {
             <Download size={18} /> Download OWASP ZAP <ExternalLink size={14} />
           </a>
 
-          <a
-            href="https://github.com/adyotohrii-debug/SentinelX/archive/refs/heads/main.zip"
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={handleDownloadZip}
-            className="secondary-button"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "8px",
-              padding: "14px 24px",
-              borderRadius: "12px",
-              fontWeight: "600",
-              fontSize: "0.95rem",
-              textDecoration: "none",
-              background: "var(--panel-glass)",
-              border: "1px solid var(--border-glass)",
-              color: "var(--text-main)",
-            }}
-          >
-            <Download size={18} /> Download SentinelX (.zip)
-          </a>
 
 
           <a
