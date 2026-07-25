@@ -1,4 +1,5 @@
 from datetime import datetime
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
 from app.models.assessment import Assessment
@@ -8,26 +9,21 @@ from app.services.security_service import get_tools_status
 
 def generate_report(db: Session, user_id: str = None):
     if user_id:
-        assessments = db.query(Assessment).filter(Assessment.user_id == user_id).all()
-        findings = db.query(Finding).join(Assessment).filter(Assessment.user_id == user_id).all()
-
-        total_assessments = len(assessments)
-        total_findings = len(findings)
-
-        critical = sum(1 for f in findings if f.severity == "Critical")
-        high = sum(1 for f in findings if f.severity == "High")
-        medium = sum(1 for f in findings if f.severity == "Medium")
-        low = sum(1 for f in findings if f.severity == "Low")
-        owasp_count = sum(1 for f in findings if "owasp" in (f.scanner or "").lower())
+        assessment_filter = or_(Assessment.user_id == user_id, Assessment.user_id == None)
+        assessments = db.query(Assessment).filter(assessment_filter).all()
+        findings = db.query(Finding).join(Assessment).filter(assessment_filter).all()
     else:
-        total_assessments = 0
-        total_findings = 0
-        critical = 0
-        high = 0
-        medium = 0
-        low = 0
-        owasp_count = 0
-        findings = []
+        assessments = db.query(Assessment).all()
+        findings = db.query(Finding).all()
+
+    total_assessments = len(assessments)
+    total_findings = len(findings)
+
+    critical = sum(1 for f in findings if f.severity == "Critical")
+    high = sum(1 for f in findings if f.severity == "High")
+    medium = sum(1 for f in findings if f.severity == "Medium")
+    low = sum(1 for f in findings if f.severity == "Low")
+    owasp_count = sum(1 for f in findings if "owasp" in (f.scanner or "").lower())
 
     return {
         "generated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
@@ -48,4 +44,4 @@ def generate_report(db: Session, user_id: str = None):
             }
             for f in findings[:20]
         ]
-    }
+    }
