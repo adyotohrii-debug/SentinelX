@@ -422,7 +422,7 @@ return (
 
                         <h2>
 
-                            📂 Import Existing Scan
+                            📂 Import Existing Assessment
 
                         </h2>
 
@@ -493,9 +493,10 @@ return (
 
                         >
 
-                            Import Scan
+                            Import Assessment
 
                         </button>
+
 
                     </div>
 

@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends, Header
 from sqlalchemy.orm import Session
-from sqlalchemy import or_
 from typing import Optional
 
 from app.core.database import get_db
@@ -20,9 +19,7 @@ def get_assessments(
     x_user_id: Optional[str] = Header(None)
 ):
     if x_user_id:
-        return db.query(Assessment).filter(
-            or_(Assessment.user_id == x_user_id, Assessment.user_id == None)
-        ).all()
+        return db.query(Assessment).filter(Assessment.user_id == x_user_id).all()
     return db.query(Assessment).all()
 
 
@@ -35,7 +32,7 @@ def get_assessment(
     import json
     query = db.query(Assessment).filter(Assessment.id == assessment_id)
     if x_user_id:
-        query = query.filter(or_(Assessment.user_id == x_user_id, Assessment.user_id == None))
+        query = query.filter(Assessment.user_id == x_user_id)
     
     assessment = query.first()
     if not assessment:
@@ -70,12 +67,14 @@ def get_assessment(
 @router.post("/")
 def create_assessment(
     assessment: AssessmentCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    x_user_id: Optional[str] = Header(None)
 ):
     new_assessment = Assessment(
         name=assessment.name,
         target=assessment.target,
-        input_type=assessment.input_type
+        input_type=assessment.input_type,
+        user_id=x_user_id
     )
 
     db.add(new_assessment)
@@ -89,11 +88,13 @@ def create_assessment(
 def update_assessment(
     assessment_id: int,
     assessment: AssessmentCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    x_user_id: Optional[str] = Header(None)
 ):
-    existing = db.query(Assessment).filter(
-        Assessment.id == assessment_id
-    ).first()
+    query = db.query(Assessment).filter(Assessment.id == assessment_id)
+    if x_user_id:
+        query = query.filter(Assessment.user_id == x_user_id)
+    existing = query.first()
 
     if not existing:
         return {"message": "Assessment not found"}
@@ -116,7 +117,7 @@ def delete_assessment(
 ):
     query = db.query(Assessment).filter(Assessment.id == assessment_id)
     if x_user_id:
-        query = query.filter(or_(Assessment.user_id == x_user_id, Assessment.user_id == None))
+        query = query.filter(Assessment.user_id == x_user_id)
     
     assessment = query.first()
 
@@ -128,4 +129,3 @@ def delete_assessment(
     db.commit()
 
     return {"message": "Assessment deleted successfully"}
-

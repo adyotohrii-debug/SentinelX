@@ -144,27 +144,27 @@ export default function History() {
         <section className="history-hero">
           <div>
             <span>Assessment archive</span>
-            <h1>Your scan history</h1>
+            <h1>Your assessment history</h1>
             <p>Every completed website assessment, saved for review and export.</p>
           </div>
           <div className="history-total">
             <ShieldCheck size={20} />
             <strong>{assessments.length}</strong>
-            <small>websites scanned</small>
+            <small>websites assessed</small>
           </div>
         </section>
 
         <section className="history-toolbar">
           <label>
             <Search size={18} />
-            <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search website or scan name" />
+            <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search website or assessment name" />
           </label>
           <span>{filtered.length} records</span>
           {pdfLoading && <span className="pdf-generation-status">Generating PDF...</span>}
         </section>
 
         {loading ? (
-          <div className="history-loading">Loading your scan archive…</div>
+          <div className="history-loading">Loading your assessment archive…</div>
         ) : (
           <section className="history-table-card">
             {filtered.length ? (
@@ -173,11 +173,11 @@ export default function History() {
                   <thead>
                     <tr>
                       <th>Target URL / Host</th>
-                      <th>Scanner Type</th>
+                      <th>Assessment Type</th>
                       <th>Risk Score</th>
-                      <th>Scan Status</th>
+                      <th>Assessment Status</th>
                       <th>Report</th>
-                      <th>Scan Date & Time</th>
+                      <th>Assessment Date & Time</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
@@ -225,7 +225,7 @@ export default function History() {
                             <button onClick={() => downloadRecord(item)} title="Download JSON Record">
                               <Download size={17} />
                             </button>
-                            <button className="delete-record" onClick={() => deleteRecord(item.id)} title="Delete Scan">
+                            <button className="delete-record" onClick={() => deleteRecord(item.id)} title="Delete Assessment">
                               <Trash2 size={17} />
                             </button>
                           </td>
@@ -239,12 +239,13 @@ export default function History() {
             ) : (
               <div className="history-empty">
                 <FileSearch size={28} />
-                <h2>No matching scans</h2>
+                <h2>No matching assessments</h2>
                 <p>Run an assessment to create a searchable security record.</p>
               </div>
             )}
           </section>
         )}
+
 
         {selected && (
           <div className="history-modal-backdrop" onMouseDown={() => setSelected(null)}>

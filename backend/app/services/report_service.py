@@ -1,5 +1,4 @@
 from datetime import datetime
-from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
 from app.models.assessment import Assessment
@@ -9,9 +8,8 @@ from app.services.security_service import get_tools_status
 
 def generate_report(db: Session, user_id: str = None):
     if user_id:
-        assessment_filter = or_(Assessment.user_id == user_id, Assessment.user_id == None)
-        assessments = db.query(Assessment).filter(assessment_filter).all()
-        findings = db.query(Finding).join(Assessment).filter(assessment_filter).all()
+        assessments = db.query(Assessment).filter(Assessment.user_id == user_id).all()
+        findings = db.query(Finding).join(Assessment).filter(Assessment.user_id == user_id).all()
     else:
         assessments = db.query(Assessment).all()
         findings = db.query(Finding).all()

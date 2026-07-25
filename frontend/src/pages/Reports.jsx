@@ -106,11 +106,12 @@ export default function Reports() {
           }}
         >
           <Card
-            title="Total Scans"
+            title="Total Assessments"
             value={report.total_assessments}
             icon={<ClipboardList size={22} color="var(--neon-blue)" />}
             glow="var(--neon-blue)"
           />
+
           <Card
             title="Total Findings"
             value={report.total_findings}
@@ -172,9 +173,10 @@ export default function Reports() {
             </thead>
             <tbody style={{ color: "var(--text-main)", fontSize: "0.9rem" }}>
               <tr style={{ borderBottom: "1px solid var(--line)" }}>
-                <td style={{ padding: "14px 16px", fontWeight: "600" }}>Total Scans Conducted</td>
+                <td style={{ padding: "14px 16px", fontWeight: "600" }}>Total Assessments Conducted</td>
                 <td style={{ padding: "14px 16px", color: "var(--text-highlight)", fontFamily: "var(--font-display)", fontWeight: "700" }}>{report.total_assessments}</td>
               </tr>
+
               <tr style={{ borderBottom: "1px solid var(--line)" }}>
                 <td style={{ padding: "14px 16px", fontWeight: "600" }}>Total Vulnerability Findings</td>
                 <td style={{ padding: "14px 16px", color: "var(--text-highlight)", fontFamily: "var(--font-display)", fontWeight: "700" }}>{report.total_findings}</td>

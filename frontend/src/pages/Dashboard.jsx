@@ -137,7 +137,7 @@ export default function Dashboard() {
 
             <article className="dashboard-panel quick-actions-panel">
               <div className="panel-heading"><div><span className="eyebrow">Workspace</span><h2>Quick actions</h2></div><Activity size={21} /></div>
-              <Link to="/assessment" className="quick-action"><span className="quick-action-icon"><ScanSearch size={18} /></span><span><strong>Run a scan</strong><small>Assess a new target</small></span><ArrowRight size={17} /></Link>
+              <Link to="/assessment" className="quick-action"><span className="quick-action-icon"><ScanSearch size={18} /></span><span><strong>Run an assessment</strong><small>Assess a new target</small></span><ArrowRight size={17} /></Link>
               <Link to="/reports" className="quick-action"><span className="quick-action-icon"><FileText size={18} /></span><span><strong>Review reports</strong><small>Explore security insights</small></span><ArrowRight size={17} /></Link>
               <Link to="/history" className="quick-action"><span className="quick-action-icon"><BarChart3 size={18} /></span><span><strong>Assessment history</strong><small>Track past results</small></span><ArrowRight size={17} /></Link>
             </article>
@@ -149,7 +149,7 @@ export default function Dashboard() {
               <div className="severity-list">
                 {severityRows.map((row) => <div className="severity-row" key={row.label}><span className={`severity-dot ${row.tone}`} /><span className="severity-label">{row.label}</span><div className="severity-track"><i className={row.tone} style={{ width: `${(row.value / maxSeverity) * 100}%` }} /></div><strong>{row.value}</strong></div>)}
               </div>
-              <div className="findings-footnote"><span><CheckCircle2 size={16} /> Scan coverage active</span><span>{stats.total_assessments} assessments completed</span></div>
+              <div className="findings-footnote"><span><CheckCircle2 size={16} /> Assessment coverage active</span><span>{stats.total_assessments} assessments completed</span></div>
             </article>
 
             <article className="dashboard-panel activity-panel">
@@ -180,9 +180,10 @@ export default function Dashboard() {
           </section>
 
           <section className="dashboard-panel scan-history-panel">
-            <div className="panel-heading"><div><span className="eyebrow">Your activity</span><h2>Recently scanned websites</h2></div><Link to="/history" className="history-link">View all history <ArrowRight size={15} /></Link></div>
-            {assessments.length ? <div className="recent-table-wrap"><table className="recent-table"><thead><tr><th>Website</th><th>Scan type</th><th>Status</th><th>Completed</th><th /></tr></thead><tbody>{assessments.slice().reverse().slice(0, 5).map((item) => <tr key={item.id}><td><strong>{item.target}</strong><small>{item.name}</small></td><td>{item.input_type}</td><td><span className="completed-badge">{item.status || "Completed"}</span></td><td>{item.created_at ? formatScanDate(item.created_at) : "—"}</td><td><Link to="/history" aria-label={`View ${item.target}`}><ArrowRight size={17} /></Link></td></tr>)}</tbody></table></div> : <div className="empty-history"><ScanSearch size={22} /><div><strong>No websites scanned yet</strong><p>Run your first security assessment to build your activity history.</p></div><Link to="/assessment" className="primary-button">Start assessment</Link></div>}
+            <div className="panel-heading"><div><span className="eyebrow">Your activity</span><h2>Recently assessed websites</h2></div><Link to="/history" className="history-link">View all history <ArrowRight size={15} /></Link></div>
+            {assessments.length ? <div className="recent-table-wrap"><table className="recent-table"><thead><tr><th>Website</th><th>Assessment type</th><th>Status</th><th>Completed</th><th /></tr></thead><tbody>{assessments.slice().reverse().slice(0, 5).map((item) => <tr key={item.id}><td><strong>{item.target}</strong><small>{item.name}</small></td><td>{item.input_type}</td><td><span className="completed-badge">{item.status || "Completed"}</span></td><td>{item.created_at ? formatScanDate(item.created_at) : "—"}</td><td><Link to="/history" aria-label={`View ${item.target}`}><ArrowRight size={17} /></Link></td></tr>)}</tbody></table></div> : <div className="empty-history"><ScanSearch size={22} /><div><strong>No websites assessed yet</strong><p>Run your first security assessment to build your activity history.</p></div><Link to="/assessment" className="primary-button">Start assessment</Link></div>}
           </section>
+
         </>}
       </main>
     </MainLayout>

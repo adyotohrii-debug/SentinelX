@@ -1,4 +1,3 @@
-from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
 from app.models.assessment import Assessment
@@ -8,33 +7,32 @@ from app.services.security_service import get_tools_status
 
 def get_dashboard_stats(db: Session, user_id: str = None):
     if user_id:
-        assessment_filter = or_(Assessment.user_id == user_id, Assessment.user_id == None)
-        total_assessments = db.query(Assessment).filter(assessment_filter).count()
-        total_findings = db.query(Finding).join(Assessment).filter(assessment_filter).count()
+        total_assessments = db.query(Assessment).filter(Assessment.user_id == user_id).count()
+        total_findings = db.query(Finding).join(Assessment).filter(Assessment.user_id == user_id).count()
 
         critical = db.query(Finding).join(Assessment).filter(
             Finding.severity == "Critical",
-            assessment_filter
+            Assessment.user_id == user_id
         ).count()
 
         high = db.query(Finding).join(Assessment).filter(
             Finding.severity == "High",
-            assessment_filter
+            Assessment.user_id == user_id
         ).count()
 
         medium = db.query(Finding).join(Assessment).filter(
             Finding.severity == "Medium",
-            assessment_filter
+            Assessment.user_id == user_id
         ).count()
 
         low = db.query(Finding).join(Assessment).filter(
             Finding.severity == "Low",
-            assessment_filter
+            Assessment.user_id == user_id
         ).count()
 
         owasp_findings = db.query(Finding).join(Assessment).filter(
             Finding.scanner.ilike("%OWASP%"),
-            assessment_filter
+            Assessment.user_id == user_id
         ).count()
     else:
         total_assessments = db.query(Assessment).count()
