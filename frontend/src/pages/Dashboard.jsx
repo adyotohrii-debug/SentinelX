@@ -15,9 +15,11 @@ import {
   TriangleAlert,
 } from "lucide-react";
 import { Bar, BarChart, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import ToolStatusCard from "../components/ToolStatusCard";
 import MainLayout from "../layouts/MainLayout";
 import api from "../services/api";
 import "../styles/dashboard.css";
+
 
 const formatScanDate = (dateStr) => {
   if (!dateStr) return "—";
@@ -109,7 +111,12 @@ export default function Dashboard() {
 
         {error && <div className="dashboard-notice"><TriangleAlert size={18} /> Live data is temporarily unavailable. Showing the latest available values.</div>}
 
+        <div style={{ marginBottom: "24px" }}>
+          <ToolStatusCard compact={true} />
+        </div>
+
         {loading ? <DashboardSkeleton /> : <>
+
           <section className="metrics-grid" aria-label="Security metrics">
             {metricCards.map(({ label, value, note, icon: Icon, tone }) => (
               <article className={`metric-card ${tone}`} key={label}>

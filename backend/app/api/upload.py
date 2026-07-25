@@ -1,4 +1,5 @@
-from fastapi import APIRouter, UploadFile, File, HTTPException, Depends
+from typing import Optional
+from fastapi import APIRouter, UploadFile, File, HTTPException, Depends, Header
 from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.models.assessment import Assessment
@@ -22,7 +23,11 @@ router = APIRouter(
 
 
 @router.post("/file")
-async def upload_file(file: UploadFile = File(...), db: Session = Depends(get_db)):
+async def upload_file(
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    x_user_id: Optional[str] = Header(None)
+):
 
     if not file.filename:
         raise HTTPException(
@@ -36,10 +41,12 @@ async def upload_file(file: UploadFile = File(...), db: Session = Depends(get_db
         assessment = Assessment(
             name=f"Imported scan — {file.filename}",
             target=result.get("target") or file.filename,
-            input_type="Imported file",
+            input_type=result.get("scanner") or "Imported file",
             status="Completed",
             raw_results=json.dumps(result),
+            user_id=x_user_id
         )
+
         db.add(assessment)
         db.flush()
         for item in result.get("findings", []):

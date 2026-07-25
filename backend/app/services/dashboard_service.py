@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 
 from app.models.assessment import Assessment
 from app.models.finding import Finding
+from app.services.security_service import get_tools_status
 
 
 def get_dashboard_stats(db: Session, user_id: str = None):
@@ -28,6 +29,11 @@ def get_dashboard_stats(db: Session, user_id: str = None):
             Finding.severity == "Low",
             Assessment.user_id == user_id
         ).count()
+
+        owasp_findings = db.query(Finding).join(Assessment).filter(
+            Finding.scanner.ilike("%OWASP%"),
+            Assessment.user_id == user_id
+        ).count()
     else:
         total_assessments = 0
         total_findings = 0
@@ -35,6 +41,7 @@ def get_dashboard_stats(db: Session, user_id: str = None):
         high = 0
         medium = 0
         low = 0
+        owasp_findings = 0
 
     return {
         "total_assessments": total_assessments,
@@ -43,4 +50,6 @@ def get_dashboard_stats(db: Session, user_id: str = None):
         "high": high,
         "medium": medium,
         "low": low,
-    }
+        "owasp_findings": owasp_findings,
+        "tools_status": get_tools_status(),
+    }

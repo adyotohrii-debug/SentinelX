@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, Header
 from sqlalchemy.orm import Session
+from sqlalchemy import or_
 from typing import Optional
 
 from app.core.database import get_db
@@ -19,8 +20,10 @@ def get_assessments(
     x_user_id: Optional[str] = Header(None)
 ):
     if x_user_id:
-        return db.query(Assessment).filter(Assessment.user_id == x_user_id).all()
-    return []
+        return db.query(Assessment).filter(
+            or_(Assessment.user_id == x_user_id, Assessment.user_id == None)
+        ).all()
+    return db.query(Assessment).all()
 
 
 @router.get("/{assessment_id}")
@@ -32,9 +35,8 @@ def get_assessment(
     import json
     query = db.query(Assessment).filter(Assessment.id == assessment_id)
     if x_user_id:
-        query = query.filter(Assessment.user_id == x_user_id)
-    else:
-        return {"message": "Assessment not found"}
+        query = query.filter(or_(Assessment.user_id == x_user_id, Assessment.user_id == None))
+    
     assessment = query.first()
     if not assessment:
         return {"message": "Assessment not found"}
@@ -101,44 +103,6 @@ def update_assessment(
     existing.input_type = assessment.input_type
 
     db.commit()
-
-
-@router.post("/")
-def create_assessment(
-    assessment: AssessmentCreate,
-    db: Session = Depends(get_db)
-):
-    new_assessment = Assessment(
-        name=assessment.name,
-        target=assessment.target,
-        input_type=assessment.input_type
-    )
-
-    db.add(new_assessment)
-    db.commit()
-    db.refresh(new_assessment)
-
-    return new_assessment
-
-
-@router.put("/{assessment_id}")
-def update_assessment(
-    assessment_id: int,
-    assessment: AssessmentCreate,
-    db: Session = Depends(get_db)
-):
-    existing = db.query(Assessment).filter(
-        Assessment.id == assessment_id
-    ).first()
-
-    if not existing:
-        return {"message": "Assessment not found"}
-
-    existing.name = assessment.name
-    existing.target = assessment.target
-    existing.input_type = assessment.input_type
-
-    db.commit()
     db.refresh(existing)
 
     return existing
@@ -152,9 +116,8 @@ def delete_assessment(
 ):
     query = db.query(Assessment).filter(Assessment.id == assessment_id)
     if x_user_id:
-        query = query.filter(Assessment.user_id == x_user_id)
-    else:
-        return {"message": "Assessment not found"}
+        query = query.filter(or_(Assessment.user_id == x_user_id, Assessment.user_id == None))
+    
     assessment = query.first()
 
     if not assessment:
@@ -165,3 +128,4 @@ def delete_assessment(
     db.commit()
 
     return {"message": "Assessment deleted successfully"}
+

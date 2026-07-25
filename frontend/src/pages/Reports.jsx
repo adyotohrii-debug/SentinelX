@@ -191,13 +191,18 @@ export default function Reports() {
                 <td style={{ padding: "14px 16px", color: "#eab308", fontWeight: "600" }}>Medium Findings</td>
                 <td style={{ padding: "14px 16px", color: "#eab308", fontFamily: "var(--font-display)", fontWeight: "700" }}>{report.medium}</td>
               </tr>
-              <tr>
+              <tr style={{ borderBottom: "1px solid var(--line)" }}>
                 <td style={{ padding: "14px 16px", color: "var(--neon-teal)", fontWeight: "600" }}>Low Findings</td>
                 <td style={{ padding: "14px 16px", color: "var(--neon-teal)", fontFamily: "var(--font-display)", fontWeight: "700" }}>{report.low}</td>
+              </tr>
+              <tr>
+                <td style={{ padding: "14px 16px", color: "var(--neon-purple)", fontWeight: "600" }}>OWASP ZAP Findings</td>
+                <td style={{ padding: "14px 16px", color: "var(--neon-purple)", fontFamily: "var(--font-display)", fontWeight: "700" }}>{report.owasp_findings || 0}</td>
               </tr>
             </tbody>
           </table>
         </div>
+
       </div>
     </MainLayout>
   );

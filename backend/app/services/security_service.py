@@ -171,3 +171,43 @@ def run_nmap(target: str):
             "installed": True,
             "error": str(e)
         }
+
+
+def detect_zap():
+    """Check if OWASP ZAP binary exists on the system."""
+    for binary in ["zap.sh", "zap.bat", "zaproxy", "zap"]:
+        if shutil.which(binary) is not None:
+            return True
+    return False
+
+
+def check_zap_running(base_url: str = "http://127.0.0.1:8080"):
+    """Check if OWASP ZAP REST API is reachable."""
+    try:
+        response = requests.get(f"{base_url}/JSON/core/view/version/", timeout=1.5)
+        return response.status_code == 200
+    except Exception:
+        try:
+            response = requests.get(base_url, timeout=1.5)
+            return response.status_code in [200, 403, 401]
+        except Exception:
+            return False
+
+
+def get_tools_status():
+    """Return backend status for Nmap and OWASP ZAP."""
+    nmap_ok = detect_nmap()
+    zap_installed = detect_zap()
+    zap_running = check_zap_running()
+
+    return {
+        "nmap_installed": nmap_ok,
+        "zap_installed": zap_installed,
+        "zap_running": zap_running,
+        "zap_available": zap_running,
+        "message": (
+            "OWASP ZAP is online and reachable."
+            if zap_running
+            else "OWASP ZAP is not installed or not running. Advanced vulnerability scanning is unavailable. All other SentinelX security assessment features remain fully functional."
+        )
+    }

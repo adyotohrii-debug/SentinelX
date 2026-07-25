@@ -172,43 +172,69 @@ export default function History() {
                 <table>
                   <thead>
                     <tr>
-                      <th>Website</th>
-                      <th>Type</th>
-                      <th>Status</th>
-                      <th>Scan date</th>
+                      <th>Target URL / Host</th>
+                      <th>Scanner Type</th>
+                      <th>Risk Score</th>
+                      <th>Scan Status</th>
+                      <th>Report</th>
+                      <th>Scan Date & Time</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {filtered.map((item) => (
-                      <tr key={item.id}>
-                        <td>
-                          <strong>{item.target}</strong>
-                          <small>{item.name}</small>
-                        </td>
-                        <td>{item.input_type}</td>
-                        <td>
-                          <span className="history-status">{item.status || "Completed"}</span>
-                        </td>
-                        <td>{item.created_at ? formatScanDate(item.created_at) : "—"}</td>
-                        <td className="history-actions">
-                          <button onClick={() => viewRecord(item.id)} title="View Scan Details">
-                            <FileSearch size={17} /> View
-                          </button>
-                          <button onClick={() => downloadPDFReport(item)} title="Download PDF Report" className="pdf-btn">
-                            <FileText size={17} />
-                          </button>
-                          <button onClick={() => downloadRecord(item)} title="Download JSON Record">
-                            <Download size={17} />
-                          </button>
-                          <button className="delete-record" onClick={() => deleteRecord(item.id)} title="Delete Scan">
-                            <Trash2 size={17} />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
+                    {filtered.map((item) => {
+                      let rawScore = "—";
+                      if (item.raw_results) {
+                        try {
+                          const parsed = typeof item.raw_results === "string" ? JSON.parse(item.raw_results) : item.raw_results;
+                          if (parsed.security_score !== undefined) rawScore = `${parsed.security_score}/100`;
+                        } catch (e) {}
+                      }
+                      return (
+                        <tr key={item.id}>
+                          <td>
+                            <strong>{item.target}</strong>
+                            <small>{item.name}</small>
+                          </td>
+                          <td>
+                            <span style={{ fontSize: "0.85rem", fontWeight: "600", color: "var(--neon-blue)" }}>
+                              {item.input_type || "Website"}
+                            </span>
+                          </td>
+                          <td>
+                            <span style={{ fontWeight: "700", fontFamily: "var(--font-display)", color: rawScore !== "—" ? "#50cb93" : "var(--text-muted)" }}>
+                              {rawScore}
+                            </span>
+                          </td>
+                          <td>
+                            <span className="history-status">{item.status || "Completed"}</span>
+                          </td>
+                          <td>
+                            <span style={{ fontSize: "0.75rem", padding: "3px 8px", borderRadius: "6px", background: "rgba(80, 203, 147, 0.12)", color: "#50cb93", fontWeight: "600" }}>
+                              Ready
+                            </span>
+                          </td>
+                          <td>{item.created_at ? formatScanDate(item.created_at) : "—"}</td>
+                          <td className="history-actions">
+                            <button onClick={() => viewRecord(item.id)} title="View Details">
+                              <FileSearch size={17} /> View
+                            </button>
+                            <button onClick={() => downloadPDFReport(item)} title="Download PDF Report" className="pdf-btn">
+                              <FileText size={17} /> PDF
+                            </button>
+                            <button onClick={() => downloadRecord(item)} title="Download JSON Record">
+                              <Download size={17} />
+                            </button>
+                            <button className="delete-record" onClick={() => deleteRecord(item.id)} title="Delete Scan">
+                              <Trash2 size={17} />
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
+
               </div>
             ) : (
               <div className="history-empty">

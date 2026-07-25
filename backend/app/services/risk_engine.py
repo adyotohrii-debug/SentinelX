@@ -139,8 +139,29 @@ def calculate_risk(scan_result):
         score -= 5
 
     # -------------------------
+    # OWASP Findings (if present)
+    # -------------------------
+
+    owasp_findings = scan_result.get("owasp_findings", [])
+    for finding in owasp_findings:
+        risk_str = str(finding.get("risk", "")).lower()
+        if "high" in risk_str:
+            score -= 10
+            recommendations.append(f"OWASP High Risk: {finding.get('title', 'Vulnerability detected')}")
+        elif "medium" in risk_str:
+            score -= 5
+            recommendations.append(f"OWASP Medium Risk: {finding.get('title', 'Vulnerability detected')}")
+        elif "low" in risk_str:
+            score -= 2
+            recommendations.append(f"OWASP Low Risk: {finding.get('title', 'Vulnerability detected')}")
+        elif "critical" in risk_str:
+            score -= 15
+            recommendations.append(f"OWASP Critical Risk: {finding.get('title', 'Vulnerability detected')}")
+
+    # -------------------------
     # Clamp
     # -------------------------
+
 
     score = max(0, min(score, 100))
 

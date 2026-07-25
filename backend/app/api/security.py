@@ -12,7 +12,9 @@ from app.services.security_service import (
     check_ssl,
     scan_ports,
     run_nmap,
+    get_tools_status,
 )
+
 
 from app.services.intelligence_service import (
     get_whois,
@@ -193,3 +195,9 @@ def run_security_scan(
         "http_methods": methods,
         "server": server,
     }
+
+
+@router.get("/tools-status")
+def tools_status():
+    return get_tools_status()
+
