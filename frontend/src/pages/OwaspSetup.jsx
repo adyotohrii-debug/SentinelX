@@ -1,4 +1,4 @@
-import { Download, ExternalLink, GitBranch, Shield, Terminal, CheckCircle2, AlertCircle, PlayCircle, FileUp, Globe, Laptop } from "lucide-react";
+import { Download, ExternalLink, GitBranch, Shield, Terminal, CheckCircle2, AlertCircle, PlayCircle, FileUp, Globe, Laptop, Cpu, FileText } from "lucide-react";
 import MainLayout from "../layouts/MainLayout";
 import ToolStatusCard from "../components/ToolStatusCard";
 
@@ -22,10 +22,10 @@ export default function OwaspSetup() {
               margin: "8px 0 10px 0",
             }}
           >
-            OWASP ZAP & SentinelX Local Setup Guide
+            OWASP ZAP & Local Environment Setup Guide
           </h1>
           <p style={{ color: "var(--text-muted)", fontSize: "0.98rem", lineHeight: "1.6" }}>
-            Step-by-step guide to installing OWASP ZAP, downloading SentinelX, running the project locally, and connecting scanner integrations.
+            Complete step-by-step guide to installing local security tools (Nmap & OWASP ZAP), downloading SentinelX, running the project locally, and connecting scanner integrations.
           </p>
         </div>
 
@@ -59,7 +59,7 @@ export default function OwaspSetup() {
               textDecoration: "none",
             }}
           >
-            <Download size={18} /> 1. Download OWASP ZAP <ExternalLink size={14} />
+            <Download size={18} /> Download OWASP ZAP <ExternalLink size={14} />
           </a>
 
           <a
@@ -81,7 +81,7 @@ export default function OwaspSetup() {
               color: "var(--text-main)",
             }}
           >
-            <Download size={18} /> 2. Download SentinelX (.zip)
+            <Download size={18} /> Download SentinelX (.zip)
           </a>
 
           <a
@@ -107,7 +107,7 @@ export default function OwaspSetup() {
           </a>
         </div>
 
-        {/* Web Browser vs Local Backend Execution Note */}
+        {/* Local Tool Requirement Note */}
         <div
           style={{
             background: "var(--panel-glass)",
@@ -130,31 +130,43 @@ export default function OwaspSetup() {
               gap: "10px",
             }}
           >
-            <AlertCircle size={22} color="var(--neon-blue)" /> Web Browser Mode vs Local Machine Execution
+            <Cpu size={22} color="var(--neon-purple)" /> Local Prerequisites (Nmap & OWASP ZAP)
           </h2>
+          <p style={{ color: "var(--text-muted)", fontSize: "0.93rem", lineHeight: "1.6", margin: "0 0 16px 0" }}>
+            When running SentinelX <strong>locally on your computer</strong>, both <strong>Nmap</strong> (for CLI port scanning) and <strong>OWASP ZAP</strong> (for vulnerability scanning) should be installed on your system for full local tool detection.
+          </p>
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "20px" }}>
             <div style={{ background: "rgba(148, 163, 184, 0.05)", border: "1px solid rgba(148, 163, 184, 0.15)", borderRadius: "12px", padding: "18px" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--neon-blue)", fontWeight: "700", marginBottom: "8px" }}>
-                <Globe size={18} /> Web Browser / Hosted Mode
-              </div>
-              <p style={{ color: "var(--text-muted)", fontSize: "0.88rem", margin: 0, lineHeight: "1.5" }}>
-                When accessing SentinelX through a web browser on a cloud demo or Vercel, the browser cannot access tools (OWASP ZAP / Nmap) installed on your PC. Online modules (Headers, SSL, DNS, WHOIS, Tech Stack, XML File Import) run automatically in backend scans.
+              <strong style={{ color: "var(--neon-blue)", fontSize: "0.98rem", display: "block", marginBottom: "8px" }}>
+                1. Nmap (Port Scanner)
+              </strong>
+              <p style={{ color: "var(--text-muted)", fontSize: "0.85rem", margin: "0 0 8px 0", lineHeight: "1.4" }}>
+                Required for CLI port scanning on local backend:
               </p>
+              <ul style={{ margin: 0, paddingLeft: "18px", color: "var(--text-main)", fontSize: "0.83rem", lineHeight: "1.5" }}>
+                <li><b>Windows:</b> Download installer from <a href="https://nmap.org/download.html" target="_blank" rel="noreferrer" style={{ color: "var(--neon-teal)" }}>nmap.org</a> and check "Add Nmap to PATH".</li>
+                <li><b>macOS:</b> <code style={{ color: "var(--neon-purple)" }}>brew install nmap</code></li>
+                <li><b>Linux:</b> <code style={{ color: "var(--neon-purple)" }}>sudo apt install nmap</code></li>
+              </ul>
             </div>
 
             <div style={{ background: "rgba(80, 203, 147, 0.05)", border: "1px solid rgba(80, 203, 147, 0.2)", borderRadius: "12px", padding: "18px" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#50cb93", fontWeight: "700", marginBottom: "8px" }}>
-                <Laptop size={18} /> Local Machine Execution Mode
-              </div>
-              <p style={{ color: "var(--text-muted)", fontSize: "0.88rem", margin: 0, lineHeight: "1.5" }}>
-                When you download SentinelX locally and run it on your machine, the backend server detects your local OWASP ZAP instance on <code style={{ color: "#50cb93" }}>http://127.0.0.1:8080</code> automatically!
+              <strong style={{ color: "#50cb93", fontSize: "0.98rem", display: "block", marginBottom: "8px" }}>
+                2. OWASP ZAP (Desktop / Daemon)
+              </strong>
+              <p style={{ color: "var(--text-muted)", fontSize: "0.85rem", margin: "0 0 8px 0", lineHeight: "1.4" }}>
+                Required for REST API connection on port 8080:
               </p>
+              <ul style={{ margin: 0, paddingLeft: "18px", color: "var(--text-main)", fontSize: "0.83rem", lineHeight: "1.5" }}>
+                <li><b>All OS:</b> Download installer from <a href="https://www.zaproxy.org/download/" target="_blank" rel="noreferrer" style={{ color: "var(--neon-teal)" }}>zaproxy.org</a>.</li>
+                <li><b>Launch:</b> Start ZAP on your PC (listens on <code style={{ color: "#50cb93" }}>http://127.0.0.1:8080</code>).</li>
+              </ul>
             </div>
           </div>
         </div>
 
-        {/* Ordered Step-by-Step Instructions */}
+        {/* Step-by-Step Local Setup Instructions */}
         <div
           style={{
             background: "var(--panel-glass)",
@@ -176,25 +188,25 @@ export default function OwaspSetup() {
               gap: "10px",
             }}
           >
-            <PlayCircle size={22} color="var(--neon-purple)" /> Step-by-Step Setup Guide
+            <PlayCircle size={22} color="var(--neon-purple)" /> Complete Step-by-Step Setup Guide
           </h2>
 
           <div style={{ display: "grid", gap: "24px" }}>
 
-            {/* Step 1: Install OWASP ZAP First */}
+            {/* Step 1 */}
             <div style={{ display: "flex", gap: "16px", alignItems: "flex-start" }}>
               <span style={{ width: "32px", height: "32px", borderRadius: "50%", background: "var(--neon-purple)", color: "#fff", display: "grid", placeItems: "center", fontWeight: "700", flexShrink: 0 }}>
                 1
               </span>
               <div>
-                <strong style={{ fontSize: "1.02rem", color: "var(--text-main)" }}>Step 1: Install & Launch OWASP ZAP First</strong>
+                <strong style={{ fontSize: "1.02rem", color: "var(--text-main)" }}>Step 1: Install Nmap & OWASP ZAP on your PC</strong>
                 <p style={{ color: "var(--text-muted)", fontSize: "0.9rem", margin: "4px 0 8px 0", lineHeight: "1.5" }}>
-                  Download OWASP ZAP from <a href="https://www.zaproxy.org/download/" target="_blank" rel="noopener noreferrer" style={{ color: "var(--neon-blue)", textDecoration: "underline" }}>zaproxy.org/download</a> and install it on your computer. Launch the OWASP ZAP desktop application so it runs locally (default API port <code style={{ color: "var(--neon-blue)" }}>8080</code>).
+                  Download and install <b>Nmap</b> and <b>OWASP ZAP</b> on your computer using the links above. Launch OWASP ZAP so it runs locally on default port <code style={{ color: "var(--neon-blue)" }}>8080</code>.
                 </p>
               </div>
             </div>
 
-            {/* Step 2: Download SentinelX Project */}
+            {/* Step 2 */}
             <div style={{ display: "flex", gap: "16px", alignItems: "flex-start" }}>
               <span style={{ width: "32px", height: "32px", borderRadius: "50%", background: "var(--neon-purple)", color: "#fff", display: "grid", placeItems: "center", fontWeight: "700", flexShrink: 0 }}>
                 2
@@ -208,12 +220,12 @@ export default function OwaspSetup() {
                   git clone https://github.com/adyotohrii-debug/SentinelX.git
                 </div>
                 <p style={{ color: "var(--text-muted)", fontSize: "0.85rem", margin: "6px 0 0 0" }}>
-                  Extract the zip file to your local computer.
+                  Extract the zip file into a folder on your computer.
                 </p>
               </div>
             </div>
 
-            {/* Step 3: Start Python Backend */}
+            {/* Step 3 */}
             <div style={{ display: "flex", gap: "16px", alignItems: "flex-start" }}>
               <span style={{ width: "32px", height: "32px", borderRadius: "50%", background: "var(--neon-purple)", color: "#fff", display: "grid", placeItems: "center", fontWeight: "700", flexShrink: 0 }}>
                 3
@@ -221,7 +233,7 @@ export default function OwaspSetup() {
               <div>
                 <strong style={{ fontSize: "1.02rem", color: "var(--text-main)" }}>Step 3: Run Backend Server (Python FastAPI)</strong>
                 <p style={{ color: "var(--text-muted)", fontSize: "0.9rem", margin: "4px 0 8px 0", lineHeight: "1.5" }}>
-                  Open PowerShell or Terminal inside the <code style={{ color: "var(--neon-blue)" }}>SentinelX/backend</code> directory:
+                  Open Terminal / PowerShell inside <code style={{ color: "var(--neon-blue)" }}>SentinelX/backend</code> and run:
                 </p>
                 <div style={{ background: "rgba(0,0,0,0.4)", padding: "12px 14px", borderRadius: "8px", border: "1px solid var(--border-glass)", fontFamily: "monospace", fontSize: "0.85rem", color: "var(--neon-teal)", lineHeight: "1.6" }}>
                   cd SentinelX/backend<br />
@@ -236,7 +248,7 @@ export default function OwaspSetup() {
               </div>
             </div>
 
-            {/* Step 4: Start React Frontend */}
+            {/* Step 4 */}
             <div style={{ display: "flex", gap: "16px", alignItems: "flex-start" }}>
               <span style={{ width: "32px", height: "32px", borderRadius: "50%", background: "var(--neon-purple)", color: "#fff", display: "grid", placeItems: "center", fontWeight: "700", flexShrink: 0 }}>
                 4
@@ -244,7 +256,7 @@ export default function OwaspSetup() {
               <div>
                 <strong style={{ fontSize: "1.02rem", color: "var(--text-main)" }}>Step 4: Run Frontend UI (React Vite)</strong>
                 <p style={{ color: "var(--text-muted)", fontSize: "0.9rem", margin: "4px 0 8px 0", lineHeight: "1.5" }}>
-                  Open a second terminal window inside the <code style={{ color: "var(--neon-blue)" }}>SentinelX/frontend</code> directory:
+                  Open a second Terminal window inside <code style={{ color: "var(--neon-blue)" }}>SentinelX/frontend</code> and run:
                 </p>
                 <div style={{ background: "rgba(0,0,0,0.4)", padding: "12px 14px", borderRadius: "8px", border: "1px solid var(--border-glass)", fontFamily: "monospace", fontSize: "0.85rem", color: "var(--neon-teal)", lineHeight: "1.6" }}>
                   cd SentinelX/frontend<br />
@@ -257,7 +269,7 @@ export default function OwaspSetup() {
               </div>
             </div>
 
-            {/* Step 5: Full Local Connection & XML Import */}
+            {/* Step 5 */}
             <div style={{ display: "flex", gap: "16px", alignItems: "flex-start" }}>
               <span style={{ width: "32px", height: "32px", borderRadius: "50%", background: "var(--neon-purple)", color: "#fff", display: "grid", placeItems: "center", fontWeight: "700", flexShrink: 0 }}>
                 5
@@ -265,9 +277,55 @@ export default function OwaspSetup() {
               <div>
                 <strong style={{ fontSize: "1.02rem", color: "var(--text-main)" }}>Step 5: Automatic API Connection & XML Import</strong>
                 <p style={{ color: "var(--text-muted)", fontSize: "0.9rem", margin: "4px 0 0 0", lineHeight: "1.5" }}>
-                  SentinelX running locally automatically detects your running OWASP ZAP instance on <code style={{ color: "#50cb93" }}>http://127.0.0.1:8080</code> (<strong style={{ color: "#50cb93" }}>✓ OWASP Running</strong>). You can also export scan XML reports from OWASP ZAP (<i>Report → Generate XML Report</i>) and upload them under <i>New Assessment → Import Existing Scan</i>.
+                  SentinelX running locally automatically detects your running Nmap and OWASP ZAP instances (<strong style={{ color: "#50cb93" }}>✓ Nmap Installed</strong> & <strong style={{ color: "#50cb93" }}>✓ OWASP Running</strong>). You can also export scan XML reports from OWASP ZAP (<i>Report → Generate XML Report</i>) and upload them under <i>New Assessment → Import Existing Scan</i>.
                 </p>
               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* PDF Report Comparison Card */}
+        <div
+          style={{
+            background: "var(--panel-glass)",
+            border: "1px solid var(--border-glass)",
+            padding: "24px",
+            borderRadius: "16px",
+            marginBottom: "35px",
+          }}
+        >
+          <h2
+            style={{
+              fontFamily: "var(--font-display)",
+              fontSize: "1.25rem",
+              fontWeight: "700",
+              marginBottom: "16px",
+              color: "var(--text-highlight)",
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+            }}
+          >
+            <FileText size={22} color="var(--neon-blue)" /> PDF Report Generation: Web Browser vs Local PC Mode
+          </h2>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "20px" }}>
+            <div style={{ background: "rgba(15, 23, 42, 0.6)", padding: "18px", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
+              <strong style={{ color: "var(--neon-blue)", fontSize: "0.95rem", display: "block", marginBottom: "8px" }}>
+                🌐 Web Browser / Hosted Mode PDF Report
+              </strong>
+              <p style={{ color: "var(--text-muted)", fontSize: "0.88rem", margin: 0, lineHeight: "1.5" }}>
+                Generates a complete security report including Executive Summary, Security Score, HTTP Headers, SSL Analysis, Nmap Ports, DNS, WHOIS, Tech Stack, and uploaded XML findings. Tool status reflects hosted environment health (<code style={{ color: "var(--neon-blue)" }}>OWASP: Offline</code>).
+              </p>
+            </div>
+
+            <div style={{ background: "rgba(15, 23, 42, 0.6)", padding: "18px", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
+              <strong style={{ color: "#50cb93", fontSize: "0.95rem", display: "block", marginBottom: "8px" }}>
+                💻 Local PC Mode PDF Report (ZAP / Nmap Active)
+              </strong>
+              <p style={{ color: "var(--text-muted)", fontSize: "0.88rem", margin: 0, lineHeight: "1.5" }}>
+                Generates a PDF displaying live local backend tool status matrix (<code style={{ color: "#50cb93" }}>✓ Nmap Installed</code> & <code style={{ color: "#50cb93" }}>✓ OWASP Running</code>), automatically factoring local OWASP ZAP API findings and recommendations into the Executive Summary.
+              </p>
             </div>
           </div>
         </div>

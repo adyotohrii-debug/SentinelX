@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import api from "../services/api";
 import html2pdf from "html2pdf.js";
 
 import PDFReport from "../components/PDFReport";
 import MainLayout from "../layouts/MainLayout";
 import "../styles/assessment.css";
+
 
 export default function Assessment() {
     const API = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
@@ -345,7 +347,13 @@ return (
 
                     </p>
 
+                    <div style={{ marginTop: "16px", padding: "12px 18px", background: "rgba(157, 78, 221, 0.08)", border: "1px solid rgba(157, 78, 221, 0.25)", borderRadius: "12px", display: "inline-flex", alignItems: "center", gap: "10px", fontSize: "0.88rem", color: "var(--text-main)", textAlign: "left" }}>
+                        <span>💡 Want to connect local OWASP ZAP or view local execution guide?</span>
+                        <Link to="/owasp-setup" style={{ color: "var(--neon-purple)", fontWeight: "700", textDecoration: "underline", whiteSpace: "nowrap" }}>Refer to OWASP Setup Guide →</Link>
+                    </div>
+
                 </section>
+
 
                 <div className="assessment-grid">
 
