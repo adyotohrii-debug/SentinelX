@@ -1,6 +1,6 @@
 import { Command, Search } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import "../styles/layout.css";
 
 const pageTitles = {
@@ -16,7 +16,19 @@ export default function Topbar() {
   const location = useLocation();
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
+  const inputRef = useRef(null);
   const [title, subtitle] = pageTitles[location.pathname] || ["SentinelX", "Security workspace"];
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        inputRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   const submitSearch = (event) => {
     event.preventDefault();
@@ -34,11 +46,12 @@ export default function Topbar() {
         <form className="topbar-search" onSubmit={submitSearch}>
           <Search size={16} />
           <input
+            ref={inputRef}
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Find an assessed website"
           />
-          <kbd><Command size={11} /> K</kbd>
+          <kbd title="Press Ctrl+K to search"><Command size={11} /> K</kbd>
         </form>
         <button className="profile-button">
           <span>S</span>

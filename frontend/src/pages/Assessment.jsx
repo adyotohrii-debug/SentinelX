@@ -357,7 +357,7 @@ return (
 
                 <div className="assessment-grid">
 
-                    <div className="assessment-card">
+                    <form className="assessment-card" onSubmit={(e) => { e.preventDefault(); if (!loading) startAssessment(); }}>
 
                         <h2>
 
@@ -382,6 +382,13 @@ return (
 
                             value={website}
 
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter" && !loading) {
+                                    e.preventDefault();
+                                    startAssessment();
+                                }
+                            }}
+
                             onChange={(e)=>
 
                                 setWebsite(e.target.value)
@@ -392,11 +399,11 @@ return (
 
                         <button
 
+                            type="submit"
+
                             className="primary-btn"
 
                             disabled={loading}
-
-                            onClick={startAssessment}
 
                         >
 
@@ -416,7 +423,8 @@ return (
 
                         </button>
 
-                    </div>
+                    </form>
+
 
                     <div className="assessment-card">
 
