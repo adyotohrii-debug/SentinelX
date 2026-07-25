@@ -14,7 +14,7 @@ export default function Assessment() {
     const [loading, setLoading] = useState(false);
     const [loadingText, setLoadingText] = useState("");
     const [result, setResult] = useState(null);
-    const [showPrereq, setShowPrereq] = useState(false);
+
 
     const scanSteps = [
         "Initializing Scan...",
@@ -493,48 +493,8 @@ return (
 
                 </div>
 
-                <div className="assessment-card" style={{ marginTop: "24px", cursor: "pointer" }} onClick={() => setShowPrereq(!showPrereq)}>
-                    <h2 style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", margin: 0 }}>
-                        <span>🛠️ Local Tool Prerequisites (Nmap / OWASP ZAP)</span>
-                        <span style={{ fontSize: "0.9rem", color: "var(--neon-orange)" }}>{showPrereq ? "▲ Hide Guide" : "▼ Show Guide"}</span>
-                    </h2>
-                    <p style={{ marginTop: "8px", marginBottom: 0 }}>
-                        SentinelX integrates natively with industry-standard CLI tools like Nmap and OWASP ZAP. If these tools are missing from the system hosting the SentinelX backend, see how to install them.
-                    </p>
-                    {showPrereq && (
-                        <div style={{ marginTop: "20px", borderTop: "1px solid var(--line-separator)", paddingTop: "15px", textAlign: "left" }}>
-                            <div style={{ marginBottom: "15px" }}>
-                                <h3 style={{ color: "var(--neon-orange)", fontSize: "1rem", marginBottom: "6px" }}>🔍 1. Nmap (Port Scanner)</h3>
-                                <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", lineHeight: "1.4", marginBottom: "8px" }}>
-                                    Required for scanning open ports on the target host. Without Nmap installed, the port scanning step will be skipped automatically.
-                                </p>
-                                <ul style={{ paddingLeft: "20px", listStyleType: "disc", fontSize: "0.82rem", color: "var(--text-main)" }}>
-                                    <li style={{ marginBottom: "4px" }}><b>Windows:</b> Download and run the installer from <a href="https://nmap.org/download.html" target="_blank" rel="noreferrer" style={{ color: "var(--neon-teal)", textDecoration: "none" }}>nmap.org/download</a>. Ensure you check the option to add Nmap to your system PATH.</li>
-                                    <li style={{ marginBottom: "4px" }}><b>macOS:</b> Install via Homebrew: <code style={{ color: "var(--neon-orange)" }}>brew install nmap</code></li>
-                                    <li style={{ marginBottom: "4px" }}><b>Linux (Ubuntu/Debian):</b> Run <code style={{ color: "var(--neon-orange)" }}>sudo apt update && sudo apt install -y nmap</code></li>
-                                </ul>
-                            </div>
-                            <div style={{ marginBottom: "15px" }}>
-                                <h3 style={{ color: "var(--neon-orange)", fontSize: "1rem", marginBottom: "6px" }}>🔥 2. OWASP ZAP (ZAP CLI)</h3>
-                                <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", lineHeight: "1.4", marginBottom: "8px" }}>
-                                    Required for active web vulnerability scanning. Ensure ZAP is configured and running on the default port, or use the command line tools.
-                                </p>
-                                <ul style={{ paddingLeft: "20px", listStyleType: "disc", fontSize: "0.82rem", color: "var(--text-main)" }}>
-                                    <li style={{ marginBottom: "4px" }}><b>All OS:</b> Download the ZAP installer from <a href="https://zaproxy.org/download" target="_blank" rel="noreferrer" style={{ color: "var(--neon-teal)", textDecoration: "none" }}>zaproxy.org/download</a>.</li>
-                                    <li style={{ marginBottom: "4px" }}><b>Docker:</b> Alternatively, run ZAP using the official Docker image: <code style={{ color: "var(--neon-orange)" }}>docker pull owasp/zap2docker-stable</code></li>
-                                </ul>
-                            </div>
-                            <div style={{ background: "rgba(255, 80, 0, 0.05)", borderLeft: "4px solid var(--neon-orange)", padding: "10px 14px", borderRadius: "0 8px 8px 0" }}>
-                                <p style={{ fontSize: "0.8rem", color: "var(--text-main)", margin: 0 }}>
-                                    ℹ️ <b>Verification:</b> You can verify that these tools are installed by opening your command line on the backend device and running: <code style={{ color: "var(--neon-teal)" }}>nmap --version</code>
-                                </p>
-                            </div>
-                        </div>
-                    )}
-                </div>
-
-
                 {
+
 
                     loading && (
 
