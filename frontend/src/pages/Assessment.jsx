@@ -837,45 +837,38 @@ return (
                                     </h2>
 
                                     {
-
-                                        result.technology &&
-                                        Object.keys(result.technology).length > 0
-
+                                        result.technology && typeof result.technology === "object" && Object.keys(result.technology).length > 0
                                             ? (
-
-                                                <pre>
-
-                                                    {
-
-                                                        JSON.stringify(
-
-                                                            result.technology,
-
-                                                            null,
-
-                                                            2
-
-                                                        )
-
-                                                    }
-
-                                                </pre>
-
+                                                <div style={{ display: "flex", flexDirection: "column", gap: "12px", textAlign: "left" }}>
+                                                    {Object.entries(result.technology).map(([category, items]) => (
+                                                        <div key={category}>
+                                                            <div style={{ textTransform: "uppercase", fontSize: "0.72rem", color: "var(--neon-blue)", letterSpacing: "0.06em", fontWeight: "700", marginBottom: "6px" }}>
+                                                                {category.replace(/-/g, " ")}
+                                                            </div>
+                                                            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                                                                {Array.isArray(items) ? items.map((item, idx) => (
+                                                                    <span key={idx} style={{ background: "rgba(80, 203, 147, 0.12)", border: "1px solid rgba(80, 203, 147, 0.3)", color: "#50cb93", padding: "4px 12px", borderRadius: "8px", fontSize: "0.84rem", fontWeight: "600" }}>
+                                                                        {item}
+                                                                    </span>
+                                                                )) : (
+                                                                    <span style={{ background: "rgba(157, 78, 221, 0.12)", border: "1px solid rgba(157, 78, 221, 0.3)", color: "var(--neon-purple)", padding: "4px 12px", borderRadius: "8px", fontSize: "0.84rem", fontWeight: "600" }}>
+                                                                        {String(items)}
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
                                             )
-
                                             : (
-
                                                 <p>
-
                                                     No technology information available.
-
                                                 </p>
-
                                             )
-
                                     }
 
                                 </div>
+
 
                             </section>
 
