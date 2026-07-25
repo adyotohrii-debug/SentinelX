@@ -3,7 +3,8 @@ import { NavLink } from "react-router-dom";
 import "../styles/layout.css";
 
 const menu = [
-  { name: "Home Landing", path: "/", icon: Home },
+  { name: "Home", path: "/", icon: Home },
+
   { name: "Overview", path: "/dashboard", icon: LayoutDashboard },
   { name: "New assessment", path: "/assessment", icon: ScanSearch },
   { name: "Reports", path: "/reports", icon: FileText },
