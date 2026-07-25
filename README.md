@@ -66,11 +66,16 @@ SentinelX/
 
 ## ⚙️ Installation & Setup Guide
 
-### 1. Prerequisites
+### 1. Clone Repository & Prerequisites
+```bash
+git clone https://github.com/adyotohrii-debug/SentinelX.git
+cd SentinelX
+```
 - **Python 3.10+**
 - **Node.js 18+ & npm**
 - *(Optional)* **Nmap** installed and available in system `PATH`.
 - *(Optional)* **OWASP ZAP** installed and running on default port `8080`.
+
 
 ### 2. Backend Setup
 ```bash

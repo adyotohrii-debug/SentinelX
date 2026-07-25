@@ -3,10 +3,18 @@ import MainLayout from "../layouts/MainLayout";
 import ToolStatusCard from "../components/ToolStatusCard";
 
 export default function OwaspSetup() {
-  const handleDownloadZip = () => {
-    const API = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
-    window.open(`${API}/download-zip`, "_blank");
+  const handleDownloadZip = (e) => {
+    e.preventDefault();
+    const githubZipUrl = "https://github.com/adyotohrii-debug/SentinelX/archive/refs/heads/main.zip";
+    const API = import.meta.env.VITE_API_URL;
+    
+    if (API && API.startsWith("http")) {
+      window.open(`${API}/download-zip`, "_blank");
+    } else {
+      window.open(githubZipUrl, "_blank");
+    }
   };
+
 
   return (
     <MainLayout>
@@ -67,7 +75,10 @@ export default function OwaspSetup() {
             <Download size={18} /> Download OWASP ZAP <ExternalLink size={14} />
           </a>
 
-          <button
+          <a
+            href="https://github.com/adyotohrii-debug/SentinelX/archive/refs/heads/main.zip"
+            target="_blank"
+            rel="noopener noreferrer"
             onClick={handleDownloadZip}
             className="secondary-button"
             style={{
@@ -78,14 +89,15 @@ export default function OwaspSetup() {
               borderRadius: "12px",
               fontWeight: "600",
               fontSize: "0.95rem",
+              textDecoration: "none",
               background: "var(--panel-glass)",
               border: "1px solid var(--border-glass)",
               color: "var(--text-main)",
-              cursor: "pointer",
             }}
           >
             <Download size={18} /> Download SentinelX (.zip)
-          </button>
+          </a>
+
 
           <a
             href="https://github.com/adyotohrii-debug/SentinelX"
