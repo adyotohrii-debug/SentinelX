@@ -1,6 +1,7 @@
-import { Download, ExternalLink, Github, Shield, Terminal, CheckCircle2, AlertCircle, PlayCircle, FileUp } from "lucide-react";
+import { Download, ExternalLink, GitBranch, Shield, Terminal, CheckCircle2, AlertCircle, PlayCircle, FileUp } from "lucide-react";
 import MainLayout from "../layouts/MainLayout";
 import ToolStatusCard from "../components/ToolStatusCard";
+
 
 export default function OwaspSetup() {
   return (
@@ -81,8 +82,9 @@ export default function OwaspSetup() {
               color: "var(--text-main)",
             }}
           >
-            <Github size={18} /> View Project on GitHub <ExternalLink size={14} />
+            <GitBranch size={18} /> View Project on GitHub <ExternalLink size={14} />
           </a>
+
 
           <a
             href="https://github.com/adyotohrii-debug/SentinelX/archive/refs/heads/main.zip"
